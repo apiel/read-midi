@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </head>
+
+    <body>
+        <style>
+            #log-container {
+                overflow: auto;
+                height: 300px;
+            }
+
+            .log-warn {
+                color: orange;
+            }
+            .log-error {
+                color: red;
+            }
+            .log-info {
+                color: skyblue;
+            }
+            .log-log {
+                color: rgb(52, 56, 65);
+            }
+
+            .log-warn,
+            .log-error {
+                font-weight: bold;
+            }
+        </style>
+        <h1>Midi reader</h1>
+        <div id="log-container">
+            <pre id="log"></pre>
+        </div>
+        <script src="./index.js"></script>
+    </body>
+</html>
