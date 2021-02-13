@@ -2,7 +2,7 @@
 if (navigator.requestMIDIAccess) {
     navigator
         .requestMIDIAccess({
-            //   sysex: true,
+            // sysex: true,
         })
         .then(onMIDISuccess, onMIDIFailure);
 } else {
@@ -54,6 +54,15 @@ document.getElementById('send').onclick = () => {
     const msg = JSON.parse(data);
     console.log(`Send to ${output.name}:`, msg);
     output.send(msg);
+};
+
+document.getElementById('sendHex').onclick = () => {
+    const { value: data } = document.getElementById('dataHex');
+    const { value: key } = document.getElementById('output');
+    const output = midi.outputs.get(key);
+    const msg = data.split(' ').map(v => parseInt(`0x${v}`));
+    console.log(`Send to ${output.name}:`, msg);
+    output.send(msg);
     // output.send([0x80, 60, 0x40]);
 };
 
@@ -62,8 +71,21 @@ document.getElementById('play').onclick = () => {
     const { value: key } = document.getElementById('output');
     const output = midi.outputs.get(key);
     console.log(`Play to ${output.name}:`, note);
-    output.send([144, note, 127]);
-    setTimeout(() => output.send([128, note, 127]), 1000);
+    // output.send([144, note, 127]);
+    // setTimeout(() => output.send([128, note, 127]), 1000);
+
+    output.send([144, note, 100]);
+    setTimeout(() => output.send([128, note, 0]), 1000);
+
+    // // slide
+    // output.send([0x90, note, 0x4F]);
+    // setTimeout(() => {
+    //     output.send([0x90, 0x30, 0x4F]);
+    //     output.send([0x80, note, 0x00]);
+    // }, 500);
+    // setTimeout(() => {
+    //     output.send([0x80, 0x30, 0x00]);
+    // }, 1000);
 };
 
 // Custom console.log
