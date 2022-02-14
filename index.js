@@ -2,7 +2,7 @@
 if (navigator.requestMIDIAccess) {
     navigator
         .requestMIDIAccess({
-            // sysex: true,
+            sysex: true,
         })
         .then(onMIDISuccess, onMIDIFailure);
 } else {
@@ -78,7 +78,12 @@ document.getElementById('sendHex').onclick = () => {
     const { value: data } = document.getElementById('dataHex');
     const { value: key } = document.getElementById('output');
     const output = midi.outputs.get(key);
-    const msg = data.split(' ').map((v) => parseInt(`0x${v}`));
+    const msg = data
+        .replaceAll('0x', '')
+        .replaceAll(',', ' ') 
+        .replace(/\s\s+/g, ' ') // replace multiple space to one
+        .split(' ')
+        .map((v) => parseInt(`0x${v}`));
     console.log(`Send to ${output.name}:`, msg);
     output.send(msg);
     // output.send([0x80, 60, 0x40]);
