@@ -31,13 +31,19 @@
             }
         </style>
         <h1>Midi reader</h1>
+        Input<br />
+        <select id="input">
+            <option value="-1">None</option>
+        </select><br />
+        Output<br />
         <select id="output"></select><br />
         <input id="data" />
-        <button id="send">Send Json</button><br />
+        <button id="send">Send Json</button> e.g. to start to playing: [251,248]<br />
         <input id="dataHex" />
-        <button id="sendHex">Send Hex</button><br />
+        <button id="sendHex">Send Hex</button> e.g. to stop: f8 fc fc<br />
         <select id="note"></select>
-        <button id="play">Play</button>
+        <button id="play">Play</button><br />
+        <button id="clear">Clear</button>
         <div id="log-container">
             <pre id="log"></pre>
         </div>

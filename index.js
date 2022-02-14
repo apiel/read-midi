@@ -10,12 +10,17 @@ if (navigator.requestMIDIAccess) {
 }
 
 let midi;
+let selectedInput = -1;
 
 function onMIDISuccess(midiAccess) {
     midi = midiAccess;
-    midiAccess.inputs.forEach((midiInput) => {
+    midiAccess.inputs.forEach((midiInput, key) => {
         console.log('midiInput', midiInput.name, midiInput);
-        midiInput.onmidimessage = onMIDIMessage;
+        // midiInput.onmidimessage = onMIDIMessage;
+        document.getElementById(
+            'input',
+        ).innerHTML += `<option value="${key}">${midiInput.name}</option>`;
+        midiInput.onmidimessage = onMIDIMessage(key);
     });
 
     midiAccess.outputs.forEach((midiOutput, key) => {
@@ -33,9 +38,18 @@ function onMIDIFailure(error) {
     );
 }
 
-function onMIDIMessage({ data }) {
-    console.log('MIDI data', data);
+function onMIDIMessage(key) {
+    // ignore with clock data[0] !== 248
+    return ({ data }) =>
+        selectedInput === key &&
+        data[0] !== 248 &&
+        console.log('MIDI data', data);
 }
+
+document.getElementById('input').onchange = () => {
+    const { value } = document.getElementById('input');
+    selectedInput = value;
+};
 
 // send
 
@@ -46,6 +60,10 @@ document.getElementById('note').innerHTML = Array(255)
             `<option value="${(key + 24) % 255}">${(key + 24) % 255}</option>`,
     )
     .join('');
+
+document.getElementById('clear').onclick = () => {
+    document.getElementById('log').innerHTML = '';
+};
 
 document.getElementById('send').onclick = () => {
     const { value: data } = document.getElementById('data');
@@ -60,7 +78,7 @@ document.getElementById('sendHex').onclick = () => {
     const { value: data } = document.getElementById('dataHex');
     const { value: key } = document.getElementById('output');
     const output = midi.outputs.get(key);
-    const msg = data.split(' ').map(v => parseInt(`0x${v}`));
+    const msg = data.split(' ').map((v) => parseInt(`0x${v}`));
     console.log(`Send to ${output.name}:`, msg);
     output.send(msg);
     // output.send([0x80, 60, 0x40]);
